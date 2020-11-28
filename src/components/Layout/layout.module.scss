@@ -1,0 +1,62 @@
+@import "global_variables";
+@import "global_mixins";
+
+.wrapper {
+    min-height: 100vh;
+    display: grid;
+    grid-template-areas: "header" "content" "footer";
+    grid-template-rows: auto 1fr auto;
+}
+
+.header {
+    @include BoxShadow(4);
+
+    grid-area: header;
+    position: sticky;
+    top: 0;
+    min-height: $font-size-gaint;
+    display: flex;
+    place-items: center;
+    place-content: center;
+    padding: $font-size-macro;
+
+    .navigation {
+        display: grid;
+        width: 100%;
+        grid-template-areas: "left title right";
+        grid-auto-columns: 1fr;
+        place-items: center;
+
+        &Left {
+            grid-area: left;
+        }
+
+        &Title {
+            color: $color-brand-secondary-dark;
+            font-weight: 600;
+            grid-area: title;
+            font-size: $font-size-huge;
+            margin: 0;
+        }
+
+        &Right {
+            grid-area: right;
+        }
+    }
+}
+
+.content {
+    grid-area: content;
+}
+
+.footer {
+    grid-area: footer;
+    position: sticky;
+    bottom: 0;
+    min-height: $font-size-gaint;
+    display: flex;
+    place-items: center;
+    place-content: center;
+    padding: $font-size-macro;
+    background-color: $color-brand-primary-darkest;
+}

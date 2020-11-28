@@ -1,0 +1,41 @@
+@import "global_variables";
+@import "global_mixins";
+
+$minScreen: 320px;
+$maxScreen: 2560px;
+$minFont: 10px;
+$maxFont: 18px;
+
+html {
+    @include fluid-type(font-size, $minScreen, $maxScreen, $minFont, $maxFont);
+    font-family: "Rubik", sans-serif;
+}
+
+body {
+    overflow-anchor: auto;
+    font-size: $font-size-default;
+    margin: 0;
+    color: $color-text-primary;
+}
+
+h1,
+h2,
+h3,
+h4 {
+    color: $color-text-primary;
+}
+h1,
+h2 {
+    font-weight: 500;
+}
+h3,
+h4 {
+    font-weight: 400;
+}
+
+:root {
+    --viewport-xs: #{$viewport-xs};
+    --viewport-sm: #{$viewport-sm};
+    --viewport-md: #{$viewport-md};
+    --viewport-lg: #{$viewport-lg};
+}

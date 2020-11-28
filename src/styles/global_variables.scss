@@ -1,0 +1,56 @@
+$misty-rose: hsla(12, 100%, 93%, 1);
+$dark-jungle-green: hsla(163, 11%, 12%, 1);
+$sizzling-red: hsla(358, 100%, 67%, 1);
+$yellow-green: hsla(83, 68%, 47%, 1);
+$green-blue-crayola: hsla(203, 77%, 43%, 1);
+
+$color-brand-primary: $yellow-green;
+$color-brand-primary-dark: darken($color-brand-primary, 8%);
+$color-brand-primary-darker: darken($color-brand-primary, 25%);
+$color-brand-primary-darkest: darken($color-brand-primary, 45%);
+$color-brand-primary-light: lighten($color-brand-primary, 10%);
+$color-brand-primary-lighter: lighten($color-brand-primary, 30%);
+$color-brand-primary-lightest: lighten($color-brand-primary, 40%);
+
+$color-brand-secondary: $green-blue-crayola;
+$color-brand-secondary-dark: darken($color-brand-secondary, 10%);
+$color-brand-secondary-darker: darken($color-brand-secondary, 20%);
+$color-brand-secondary-darkest: darken($color-brand-secondary, 55%);
+$color-brand-secondary-light: lighten($color-brand-secondary, 10%);
+$color-brand-secondary-lighter: lighten($color-brand-secondary, 30%);
+$color-brand-secondary-lightest: lighten($color-brand-secondary, 45%);
+
+$color-brand-whitespace: $misty-rose;
+$color-brand-divider: darken($misty-rose, 10%);
+
+$color-text-primary: $dark-jungle-green;
+$color-text-primary-light: lighten($color-text-primary, 20%);
+$color-text-primary-dark: darken($color-text-primary, 10%);
+$color-text-secondary: hsl(203, 10%, 50%);
+$color-text-secondary-light: lighten($color-text-secondary, 15%);
+$color-text-secondary-lighter: lighten($color-text-secondary, 25%);
+$color-text-secondary-lightest: lighten($color-text-secondary, 40%);
+$color-text-secondary-dark: darken($color-text-secondary, 10%);
+
+$font-size-gaint: 3rem;
+$font-size-mega: 2.75rem;
+$font-size-huge: 2.25rem;
+$font-size-large: 1.75rem;
+$font-size-big: 1.5rem;
+$font-size-increased: 1.25rem;
+$font-size-default: 1rem;
+$font-size-small: 0.875rem;
+$font-size-tiny: 0.75rem;
+$font-size-macro: 0.65rem;
+$font-size-nano: 0.35rem;
+
+$sqrt2: 1.414213562;
+
+$viewport-xs: 576px;
+$viewport-sm: 768px;
+$viewport-md: 992px;
+$viewport-lg: 1200px;
+
+$z-indexes: (
+    "nav": 500,
+);

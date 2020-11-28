@@ -1,0 +1,35 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "lib": ["dom", "dom.iterable", "esnext"],
+        "allowJs": true,
+        "skipLibCheck": true,
+        "strict": false,
+        "forceConsistentCasingInFileNames": true,
+        "noEmit": true,
+        "esModuleInterop": true,
+        "module": "esnext",
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "jsx": "preserve",
+        "baseUrl": ".",
+        "paths": {
+            "@ducks": ["src/store/ducks"],
+            "@ducks/*": ["src/store/ducks/*"],
+            "@store": ["src/store"],
+            "@store/*": ["src/store/*"],
+            "@uikit/*": ["src/components/UIKit/*"],
+            "@components/*": ["src/components/*"],
+            "@styles/*": ["src/styles/*"],
+            "@hooks/*": ["src/hooks/*"],
+            "@firebase/*": ["firebase/*"],
+            "@src/*": ["src/*"],
+            "@pages/*": ["pages/*"],
+            "@public/*": ["public/*"],
+            "@utils/*": ["utils/*"]
+        }
+    },
+    "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+    "exclude": ["node_modules", ".next"]
+}
