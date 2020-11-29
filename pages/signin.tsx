@@ -12,9 +12,8 @@ import Copyright from "@components/Copyright";
 import clsx from "clsx";
 import { useForm } from "react-hook-form";
 import useTypedDispatch from "@hooks/useTypedDispatch";
-import { signInUser, userSelector } from "@ducks/user";
+import { signInUser } from "@ducks/user";
 import { useRouter } from "next/router";
-import { useSelector } from "react-redux";
 import { Routes } from "@routes";
 
 const useStyles = makeStyles((theme) => ({
@@ -57,15 +56,22 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignIn() {
     const router = useRouter();
-    const UserState = useSelector(userSelector);
-    if (UserState.uid) router.push("/");
+    const dispatch = useTypedDispatch();
 
     const classes = useStyles();
-    const { register, handleSubmit, errors } = useForm<{
+
+    type FormValues = {
         email: string;
         password: string;
-    }>({ defaultValues: { email: "demo@demo.com", password: "demodemo" } });
-    const dispatch = useTypedDispatch();
+    };
+    const { register, handleSubmit, errors } = useForm<FormValues>({
+        defaultValues: { email: "demo@demo.com", password: "demodemo" },
+    });
+
+    const handleSubmitCb = async ({ email, password }: FormValues) => {
+        await dispatch(signInUser({ email, password }));
+        router.push(Routes.index);
+    };
 
     return (
         <Grid container component="main" className={classes.root}>
@@ -93,9 +99,7 @@ export default function SignIn() {
                         <form
                             className={classes.form}
                             noValidate
-                            onSubmit={handleSubmit(({ email, password }) => {
-                                dispatch(signInUser({ email, password }));
-                            })}
+                            onSubmit={handleSubmit(handleSubmitCb)}
                         >
                             <TextField
                                 variant="outlined"

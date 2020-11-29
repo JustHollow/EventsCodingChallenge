@@ -1,5 +1,15 @@
 import firebase from "@fb/client";
 
-const UserDb = firebase.firestore().collection("Users");
+export interface UserItemFb {
+    displayName: string;
+    email: string;
+    name: string;
+    phoneNumber: string;
+    role: string;
+    surname: string;
+    uid: string;
+}
 
-export default UserDb;
+const UsersDb = firebase.firestore().collection("Users");
+
+export default UsersDb;

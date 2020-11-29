@@ -2,21 +2,13 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "@ducks";
 import { AppThunkAction } from "@store";
 import { fbSignInUser, fbSignUpUser } from "@fb/auth";
-import UserDb from "@fb/collections/users";
-import Router from "next/router";
-import { Routes } from "@routes";
+import UsersDb, { UserItemFb } from "@fb/collections/users";
 
 //Selectors
 export const userSelector = (state: RootState) => state.user;
 
 //Reducer
-export type UserBase = {
-    displayName: string;
-    name: string;
-    surname: string;
-    email: string;
-    phoneNumber: string;
-};
+export type UserBase = Omit<UserItemFb, "role">;
 
 export interface UserState extends UserBase {
     photoURL: string;
@@ -54,33 +46,44 @@ export const signInUser: AppThunkAction<{
     email: string;
     password: string;
 }> = ({ email, password }) => async (dispatch) => {
-    // sign in user here
     const userResp = await fbSignInUser(email, password);
 
-    const user = await UserDb.doc(userResp.user.uid).get();
+    const user = await UsersDb.doc(userResp.user.uid).get();
     const userData = user.data() as UserState;
 
     if (userData) {
         dispatch(userActions.setUser(userData));
     }
-
-    Router.push(Routes.index);
 };
 
-export const signUpUser: AppThunkAction<UserBase & { password: string }> = (
-    formData
-) => async (dispatch) => {
-    const user = await fbSignUpUser(formData.email, formData.password);
+export const signUpUser: AppThunkAction<UserBase & { password: string }> = ({
+    displayName,
+    email,
+    name,
+    password,
+    phoneNumber,
+    surname,
+}) => async (dispatch) => {
+    const user = await fbSignUpUser(email, password);
 
-    await UserDb.doc(user.user.uid).set({
-        ...formData,
+    await UsersDb.doc(user.user.uid).set({
+        displayName,
+        email,
+        name,
+        phoneNumber,
+        surname,
         uid: user.user.uid,
         role: "common",
     });
 
     dispatch(
-        userActions.setUser({ ...user.user.providerData[0], ...formData })
+        userActions.setUser({
+            ...user.user.providerData[0],
+            displayName,
+            email,
+            name,
+            phoneNumber,
+            surname,
+        })
     );
-
-    Router.push(Routes.index);
 };

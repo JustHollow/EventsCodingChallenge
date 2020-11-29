@@ -11,7 +11,7 @@ import theme from "@src/theme";
 import { Fragment, useCallback, useEffect } from "react";
 import { useFbAuth } from "@hooks/useFbAuth";
 import { userActions, UserState } from "@ducks/user";
-import UserDb from "fb/collections/users";
+import UsersDb from "fb/collections/users";
 import { ProtectedRoutesHOC } from "@src/HOC/ProtectedRoutes";
 
 type MyAppInitProps = { storeState: RootState };
@@ -32,7 +32,7 @@ const MyApp: NextPage<MyAppProps, MyAppInitProps> = (props: MyAppProps) => {
     useFbAuth({
         successCb: useCallback(
             (user) =>
-                UserDb.doc(user.uid)
+                UsersDb.doc(user.uid)
                     .get()
                     .then((userDoc) => {
                         const userData = userDoc.data() as UserState;

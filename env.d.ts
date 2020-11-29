@@ -10,5 +10,6 @@ declare namespace NodeJS {
         NEXT_PUBLIC_MEASUREMENT_ID: string;
         FIREBASE_CLIENT_EMAIL: string;
         FIREBASE_PRIVATE_KEY: string;
+        GOOGLE_MAPS_API_KEY: string;
     }
 }

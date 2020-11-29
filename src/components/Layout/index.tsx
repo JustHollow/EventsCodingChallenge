@@ -1,6 +1,5 @@
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
-import CssBaseline from "@material-ui/core/CssBaseline";
 import Drawer from "@material-ui/core/Drawer";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -100,11 +99,11 @@ type LayoutProps = PropsWithChildren<{
     title?: React.ReactNode;
     headerNavigationLeft?: React.ReactNode;
     headerNavigationRight?: React.ReactNode;
-    footer?: React.ReactNode;
 }>;
 const Layout = (props: LayoutProps) => {
     const classes = useStyles();
-    const [open, setOpen] = useState(true);
+    const [open, setOpen] = useState(false);
+
     const handleDrawerOpen = () => {
         setOpen(true);
     };
@@ -114,7 +113,6 @@ const Layout = (props: LayoutProps) => {
 
     return (
         <div className={classes.root}>
-            <CssBaseline />
             <AppBar
                 position="absolute"
                 className={clsx(classes.appBar, open && classes.appBarShift)}
