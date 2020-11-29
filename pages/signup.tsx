@@ -12,7 +12,7 @@ import Copyright from "@components/Copyright";
 import clsx from "clsx";
 import { useForm } from "react-hook-form";
 import useTypedDispatch from "@hooks/useTypedDispatch";
-import { signInUser, userSelector } from "@ducks/user";
+import { signUpUser, UserBase, userSelector } from "@ducks/user";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
 import { Routes } from "@routes";
@@ -61,10 +61,11 @@ export default function SignIn() {
     if (UserState.uid) router.push("/");
 
     const classes = useStyles();
-    const { register, handleSubmit, errors } = useForm<{
-        email: string;
-        password: string;
-    }>({ defaultValues: { email: "demo@demo.com", password: "demodemo" } });
+    const { register, handleSubmit, errors } = useForm<
+        UserBase & {
+            password: string;
+        }
+    >();
     const dispatch = useTypedDispatch();
 
     return (
@@ -93,8 +94,8 @@ export default function SignIn() {
                         <form
                             className={classes.form}
                             noValidate
-                            onSubmit={handleSubmit(({ email, password }) => {
-                                dispatch(signInUser({ email, password }));
+                            onSubmit={handleSubmit((formData) => {
+                                dispatch(signUpUser(formData));
                             })}
                         >
                             <TextField
@@ -102,8 +103,22 @@ export default function SignIn() {
                                 margin="normal"
                                 required
                                 fullWidth
-                                id="email"
+                                label="Username"
+                                id="displayName"
+                                name="displayName"
+                                autoComplete="displayName"
+                                inputRef={register({ required: true })}
+                                error={Boolean(errors.displayName)}
+                                helperText={errors.displayName?.message}
+                                autoFocus
+                            />
+                            <TextField
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                fullWidth
                                 label="Email Address"
+                                id="email"
                                 name="email"
                                 autoComplete="email"
                                 inputRef={register({ required: true })}
@@ -116,8 +131,8 @@ export default function SignIn() {
                                 margin="normal"
                                 required
                                 fullWidth
-                                name="password"
                                 label="Password"
+                                name="password"
                                 type="password"
                                 id="password"
                                 autoComplete="current-password"
@@ -125,6 +140,47 @@ export default function SignIn() {
                                 error={Boolean(errors.password)}
                                 helperText={errors.password?.message}
                             />
+                            <TextField
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                fullWidth
+                                label="Name"
+                                name="name"
+                                id="name"
+                                autoComplete="fname"
+                                inputRef={register({ required: true })}
+                                error={Boolean(errors.name)}
+                                helperText={errors.name?.message}
+                            />
+                            <TextField
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                fullWidth
+                                label="Surname"
+                                name="surname"
+                                type="surname"
+                                id="surname"
+                                autoComplete="lname"
+                                inputRef={register({ required: true })}
+                                error={Boolean(errors.surname)}
+                                helperText={errors.surname?.message}
+                            />
+                            <TextField
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                fullWidth
+                                label="Phone"
+                                name="phoneNumber"
+                                id="phoneNumber"
+                                autoComplete="phone"
+                                inputRef={register({ required: true })}
+                                error={Boolean(errors.phoneNumber)}
+                                helperText={errors.phoneNumber?.message}
+                            />
+
                             <Button
                                 type="submit"
                                 fullWidth
@@ -132,12 +188,12 @@ export default function SignIn() {
                                 color="primary"
                                 className={classes.submit}
                             >
-                                Sign In
+                                Sign Up
                             </Button>
                             <Grid container>
                                 <Grid item>
-                                    <Link href={Routes.signup} variant="body2">
-                                        {"Don't have an account? Sign Up"}
+                                    <Link href={Routes.signin} variant="body2">
+                                        {"Have an account? Sign In"}
                                     </Link>
                                 </Grid>
                             </Grid>

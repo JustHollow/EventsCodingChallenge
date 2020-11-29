@@ -1,27 +1,35 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "@ducks";
 import { AppThunkAction } from "@store";
-import { fbSignInUser } from "@firebase/auth";
+import { fbSignInUser, fbSignUpUser } from "@fb/auth";
+import UserDb from "@fb/collections/users";
+import Router from "next/router";
+import { Routes } from "@routes";
 
 //Selectors
 export const userSelector = (state: RootState) => state.user;
 
 //Reducer
-export type UserState = {
+export type UserBase = {
     displayName: string;
+    name: string;
+    surname: string;
     email: string;
     phoneNumber: string;
-    photoURL: string;
-    providerId: string;
-    uid: string;
 };
+
+export interface UserState extends UserBase {
+    photoURL: string;
+    uid: string;
+}
 
 const initialState: UserState = {
     displayName: "",
+    name: "",
+    surname: "",
     email: "",
     phoneNumber: "",
     photoURL: "",
-    providerId: "",
     uid: "",
 };
 
@@ -48,24 +56,31 @@ export const signInUser: AppThunkAction<{
 }> = ({ email, password }) => async (dispatch) => {
     // sign in user here
     const userResp = await fbSignInUser(email, password);
-    console.log(userResp, userResp.additionalUserInfo.profile);
-    dispatch(userActions.setUser(userResp.user.providerData[0]));
+
+    const user = await UserDb.doc(userResp.user.uid).get();
+    const userData = user.data() as UserState;
+
+    if (userData) {
+        dispatch(userActions.setUser(userData));
+    }
+
+    Router.push(Routes.index);
 };
 
-// export const signUpUser = ({
-//     email,
-//     gender,
-//     dob,
-//     name,
-//     password,
-// }: IUserSignUp) => {
-//     return async (dispatch) =>
-//         fbSignUpUser(email, password).then((user) => {
-//             const ref = firebase.database().ref().child("user");
-//             ref.child(user.user.uid).set({ email, gender, dob, name });
-//             //  dispatch(setUser({ email, gender, dob, name }, false));
-//         });
-//     // .catch(err => {
-//     //   //
-//     // });
-// };
+export const signUpUser: AppThunkAction<UserBase & { password: string }> = (
+    formData
+) => async (dispatch) => {
+    const user = await fbSignUpUser(formData.email, formData.password);
+
+    await UserDb.doc(user.user.uid).set({
+        ...formData,
+        uid: user.user.uid,
+        role: "common",
+    });
+
+    dispatch(
+        userActions.setUser({ ...user.user.providerData[0], ...formData })
+    );
+
+    Router.push(Routes.index);
+};

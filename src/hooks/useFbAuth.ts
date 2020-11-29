@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import firebase from "@firebase/client";
+import firebase from "fb/client";
 
 const auth = firebase.auth();
 

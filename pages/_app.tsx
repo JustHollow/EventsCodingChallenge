@@ -4,14 +4,15 @@ import { Provider } from "react-redux";
 import { getStore } from "@store";
 import "@styles/global.scss";
 import { RootState } from "@ducks";
-// import firebase from "@firebase/client";
 import Head from "next/head";
 import { ThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import theme from "@src/theme";
 import { Fragment, useCallback, useEffect } from "react";
 import { useFbAuth } from "@hooks/useFbAuth";
-import { userActions } from "@ducks/user";
+import { userActions, UserState } from "@ducks/user";
+import UserDb from "fb/collections/users";
+import { ProtectedRoutesHOC } from "@src/HOC/ProtectedRoutes";
 
 type MyAppInitProps = { storeState: RootState };
 type MyAppProps = AppProps & MyAppInitProps;
@@ -31,7 +32,12 @@ const MyApp: NextPage<MyAppProps, MyAppInitProps> = (props: MyAppProps) => {
     useFbAuth({
         successCb: useCallback(
             (user) =>
-                store.dispatch(userActions.setUser(user?.providerData[0])),
+                UserDb.doc(user.uid)
+                    .get()
+                    .then((userDoc) => {
+                        const userData = userDoc.data() as UserState;
+                        store.dispatch(userActions.setUser(userData));
+                    }),
             []
         ),
     });
@@ -50,7 +56,9 @@ const MyApp: NextPage<MyAppProps, MyAppInitProps> = (props: MyAppProps) => {
                 <CssBaseline />
 
                 <Provider store={store}>
-                    <Component {...pageProps} />
+                    <ProtectedRoutesHOC>
+                        <Component {...pageProps} />
+                    </ProtectedRoutesHOC>
                 </Provider>
             </ThemeProvider>
         </Fragment>
