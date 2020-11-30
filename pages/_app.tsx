@@ -13,6 +13,8 @@ import { useFbAuth } from "@hooks/useFbAuth";
 import { userActions, UserState } from "@ducks/user";
 import UsersDb from "fb/collections/users";
 import { ProtectedRoutesHOC } from "@src/HOC/ProtectedRoutes";
+import { MuiPickersUtilsProvider } from "@material-ui/pickers";
+import DayJsUtils from "@date-io/dayjs";
 
 type MyAppInitProps = { storeState: RootState };
 type MyAppProps = AppProps & MyAppInitProps;
@@ -52,14 +54,16 @@ const MyApp: NextPage<MyAppProps, MyAppInitProps> = (props: MyAppProps) => {
                 />
             </Head>
             <ThemeProvider theme={theme}>
-                {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-                <CssBaseline />
+                <MuiPickersUtilsProvider utils={DayJsUtils}>
+                    {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+                    <CssBaseline />
 
-                <Provider store={store}>
-                    <ProtectedRoutesHOC>
-                        <Component {...pageProps} />
-                    </ProtectedRoutesHOC>
-                </Provider>
+                    <Provider store={store}>
+                        <ProtectedRoutesHOC>
+                            <Component {...pageProps} />
+                        </ProtectedRoutesHOC>
+                    </Provider>
+                </MuiPickersUtilsProvider>
             </ThemeProvider>
         </Fragment>
     );

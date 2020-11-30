@@ -1,4 +1,5 @@
-import { EventItemFb } from "@fb/collections/events";
+import EventsDb, { EventItemFb } from "@fb/collections/events";
+import firebase from "@fb/client";
 import {
     Grid,
     Paper,
@@ -7,8 +8,12 @@ import {
     Button,
     Typography,
 } from "@material-ui/core";
-import { GoogleMap, LoadScriptNext } from "@react-google-maps/api";
+import { KeyboardDateTimePicker } from "@material-ui/pickers";
+import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
+import { Routes } from "@routes";
 import clsx from "clsx";
+import dayjs from "dayjs";
+import { useRouter } from "next/router";
 import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -30,6 +35,9 @@ const useStyles = makeStyles((theme) => ({
         width: "100%",
         margin: theme.spacing(1),
     },
+    mapWrapper: {
+        margin: theme.spacing(2, 0),
+    },
     map: {
         width: "100%",
         height: 300,
@@ -39,18 +47,33 @@ const useStyles = makeStyles((theme) => ({
         padding: theme.spacing(2, 1),
     },
 }));
-
 const EventCreate = () => {
+    const router = useRouter();
     const classes = useStyles();
+    const [map, setMap] = useState<google.maps.Map<Element>>(null);
+    const [mapCenter, setMapCenter] = useState<google.maps.LatLng>(null);
+    const [selectedDate, handleDateChange] = useState(dayjs());
 
     type FormValues = Omit<EventItemFb, "uid">;
     const { register, handleSubmit, errors } = useForm<FormValues>();
 
-    const handleSubmitCb = (formData: FormValues) => {
-        console.log(formData);
+    const handleSubmitCb = async (formData: FormValues) => {
+        const newDoc: FormValues = {
+            ...formData,
+            active: true,
+            start: selectedDate.toJSON(),
+            location: new firebase.firestore.GeoPoint(
+                mapCenter.lat(),
+                mapCenter.lng()
+            ),
+        };
+        await EventsDb.add(newDoc);
+        router.push(Routes.index);
     };
 
-    const [, setMap] = useState<google.maps.Map<Element>>(null);
+    const { isLoaded: isMapLoaded, loadError: mapLoadError } = useJsApiLoader({
+        googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
+    });
 
     const onMapLoad = useCallback(function callback(
         map: google.maps.Map<Element>
@@ -100,59 +123,47 @@ const EventCreate = () => {
                         inputRef={register({ required: true })}
                         error={Boolean(errors.description)}
                         helperText={errors.description?.message}
-                        autoFocus
                     />
-                    <TextField
-                        variant="outlined"
+                    <KeyboardDateTimePicker
+                        disableToolbar
+                        variant="inline"
                         margin="normal"
-                        required
+                        label="Date and time"
+                        value={selectedDate}
+                        onChange={handleDateChange}
                         fullWidth
-                        label="Where"
-                        name="description"
-                        inputRef={register({ required: true })}
-                        error={Boolean(errors.description)}
-                        helperText={errors.description?.message}
-                        autoFocus
-                    />
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        label="Start date"
+                        KeyboardButtonProps={{
+                            "aria-label": "change date",
+                        }}
                         name="start"
                         inputRef={register({ required: true })}
-                        error={Boolean(errors.start)}
                         helperText={errors.start?.message}
-                        autoFocus
+                        error={Boolean(errors.start)}
                     />
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        label="End date"
-                        name="end"
-                        inputRef={register({ required: true })}
-                        error={Boolean(errors.end)}
-                        helperText={errors.end?.message}
-                        autoFocus
-                    />
-                    <LoadScriptNext
-                        googleMapsApiKey={process.env.GOOGLE_MAPS_API_KEY}
-                    >
-                        <GoogleMap
-                            mapContainerClassName={classes.map}
-                            zoom={10}
-                            onLoad={onMapLoad}
-                            onUnmount={onUnmount}
-                        />
-                    </LoadScriptNext>
+                    {isMapLoaded && !mapLoadError && (
+                        <div className={classes.mapWrapper}>
+                            <Typography component="h2">
+                                Where will it be?
+                            </Typography>
+                            <GoogleMap
+                                mapContainerClassName={classes.map}
+                                zoom={2}
+                                onLoad={onMapLoad}
+                                onUnmount={onUnmount}
+                                onCenterChanged={() =>
+                                    setMapCenter(map.getCenter())
+                                }
+                            >
+                                <Marker position={mapCenter} />
+                            </GoogleMap>
+                        </div>
+                    )}
                     <Button
                         fullWidth
                         color="primary"
                         variant="contained"
                         className={classes.create}
+                        type="submit"
                     >
                         Create
                     </Button>

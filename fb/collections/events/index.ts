@@ -7,8 +7,7 @@ export interface EventItemFb {
     eventType: string;
     description: string;
     start: string;
-    end: string;
-    location: [long: number, lat: number];
+    location: firebase.firestore.GeoPoint;
     sportId: string;
 }
 
