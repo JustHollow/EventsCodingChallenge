@@ -8,13 +8,15 @@ import Head from "next/head";
 import { ThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import theme from "@src/theme";
-import { Fragment, useCallback, useEffect } from "react";
+import { Fragment, useEffect } from "react";
 import { useFbAuth } from "@hooks/useFbAuth";
 import { userActions, UserState } from "@ducks/user";
 import UsersDb from "fb/collections/users";
 import { ProtectedRoutesHOC } from "@src/HOC/ProtectedRoutes";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DayJsUtils from "@date-io/dayjs";
+import { getAllEvents } from "@ducks/events";
+import { getAllSubscriptionsEvents } from "@ducks/subscriptions/events";
 
 type MyAppInitProps = { storeState: RootState };
 type MyAppProps = AppProps & MyAppInitProps;
@@ -22,6 +24,7 @@ type MyAppProps = AppProps & MyAppInitProps;
 const MyApp: NextPage<MyAppProps, MyAppInitProps> = (props: MyAppProps) => {
     const { Component, pageProps } = props;
     const store = getStore(props.storeState);
+    const dispatch = store.dispatch;
 
     useEffect(() => {
         // Remove the server-side injected CSS.
@@ -31,18 +34,20 @@ const MyApp: NextPage<MyAppProps, MyAppInitProps> = (props: MyAppProps) => {
         }
     }, []);
 
-    useFbAuth({
-        successCb: useCallback(
-            (user) =>
-                UsersDb.doc(user.uid)
-                    .get()
-                    .then((userDoc) => {
-                        const userData = userDoc.data() as UserState;
-                        store.dispatch(userActions.setUser(userData));
-                    }),
-            []
-        ),
-    });
+    const [user] = useFbAuth();
+
+    useEffect(() => {
+        if (user) {
+            (async () => {
+                const userDoc = await UsersDb.doc(user.uid).get();
+                const userData = userDoc.data() as UserState;
+                dispatch(userActions.setUser(userData));
+
+                dispatch(getAllEvents());
+                dispatch(getAllSubscriptionsEvents());
+            })();
+        }
+    }, [user]);
 
     return (
         <Fragment>

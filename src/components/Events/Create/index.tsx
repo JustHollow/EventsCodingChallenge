@@ -58,7 +58,8 @@ const EventCreate = () => {
     const { register, handleSubmit, errors } = useForm<FormValues>();
 
     const handleSubmitCb = async (formData: FormValues) => {
-        const newDoc: FormValues = {
+        const doc = EventsDb.doc();
+        const docData: EventItemFb = {
             ...formData,
             active: true,
             start: selectedDate.toJSON(),
@@ -66,8 +67,10 @@ const EventCreate = () => {
                 mapCenter.lat(),
                 mapCenter.lng()
             ),
+            uid: doc.id,
         };
-        await EventsDb.add(newDoc);
+
+        await doc.set(docData);
         router.push(Routes.index);
     };
 
@@ -80,8 +83,25 @@ const EventCreate = () => {
     ) {
         if (!process.browser) return;
 
-        const bounds = new window.google.maps.LatLngBounds();
-        map.fitBounds(bounds);
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const pos = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude,
+                    };
+
+                    map.setCenter(pos);
+                },
+                () => {
+                    const bounds = new window.google.maps.LatLngBounds();
+                    map.fitBounds(bounds);
+                }
+            );
+        } else {
+            const bounds = new window.google.maps.LatLngBounds();
+            map.fitBounds(bounds);
+        }
         setMap(map);
     },
     []);
@@ -147,7 +167,7 @@ const EventCreate = () => {
                             </Typography>
                             <GoogleMap
                                 mapContainerClassName={classes.map}
-                                zoom={2}
+                                zoom={12}
                                 onLoad={onMapLoad}
                                 onUnmount={onUnmount}
                                 onCenterChanged={() =>

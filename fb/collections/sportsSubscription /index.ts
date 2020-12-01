@@ -5,8 +5,8 @@ export interface SportsSubscriptionsItemFb {
     sportId: string;
 }
 
-const SportsSubscriptionsFb = firebase
+const SportsSubscriptionsDb = firebase
     .firestore()
     .collection("SportsSubscriptions");
 
-export default SportsSubscriptionsFb;
+export default SportsSubscriptionsDb;

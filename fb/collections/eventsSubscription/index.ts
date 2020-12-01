@@ -5,8 +5,8 @@ export interface EventsSubscriptionsItemFb {
     eventId: string;
 }
 
-const EventsSubscriptionsFb = firebase
+const EventsSubscriptionsDb = firebase
     .firestore()
     .collection("EventsSubscriptions");
 
-export default EventsSubscriptionsFb;
+export default EventsSubscriptionsDb;
