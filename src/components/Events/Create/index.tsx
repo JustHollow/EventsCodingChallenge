@@ -7,6 +7,10 @@ import {
     makeStyles,
     Button,
     Typography,
+    Select,
+    MenuItem,
+    InputLabel,
+    FormControl,
 } from "@material-ui/core";
 import { KeyboardDateTimePicker } from "@material-ui/pickers";
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
@@ -16,6 +20,8 @@ import dayjs from "dayjs";
 import { useRouter } from "next/router";
 import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
+import { sportsSelector } from "@ducks/sports";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -50,6 +56,8 @@ const useStyles = makeStyles((theme) => ({
 const EventCreate = () => {
     const router = useRouter();
     const classes = useStyles();
+    const SportsState = useSelector(sportsSelector);
+
     const [map, setMap] = useState<google.maps.Map<Element>>(null);
     const [mapCenter, setMapCenter] = useState<google.maps.LatLng>(null);
     const [selectedDate, handleDateChange] = useState(dayjs());
@@ -144,6 +152,24 @@ const EventCreate = () => {
                         error={Boolean(errors.description)}
                         helperText={errors.description?.message}
                     />
+                    <FormControl variant="outlined" fullWidth margin="normal">
+                        <InputLabel id="dsportId-label">Sport</InputLabel>
+                        <Select
+                            required
+                            labelId="sportId-label"
+                            label="Sport"
+                            name="sportId"
+                            inputRef={register({ required: true })}
+                            error={Boolean(errors.description)}
+                        >
+                            {SportsState.items.map((sport) => (
+                                <MenuItem key={sport.uid} value={sport.uid}>
+                                    {sport.name}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+
                     <KeyboardDateTimePicker
                         disableToolbar
                         variant="inline"

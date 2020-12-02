@@ -1,6 +1,6 @@
 import firebase from "@fb/client";
 
-export interface SportItemDb {
+export interface SportItemFb {
     uid: string;
     name: string;
 }

@@ -17,6 +17,7 @@ import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DayJsUtils from "@date-io/dayjs";
 import { getAllEvents } from "@ducks/events";
 import { getAllSubscriptionsEvents } from "@ducks/subscriptions/events";
+import { getAllSports } from "@ducks/sports";
 
 type MyAppInitProps = { storeState: RootState };
 type MyAppProps = AppProps & MyAppInitProps;
@@ -42,9 +43,11 @@ const MyApp: NextPage<MyAppProps, MyAppInitProps> = (props: MyAppProps) => {
                 const userDoc = await UsersDb.doc(user.uid).get();
                 const userData = userDoc.data() as UserState;
                 dispatch(userActions.setUser(userData));
-
-                dispatch(getAllEvents());
-                dispatch(getAllSubscriptionsEvents());
+                Promise.all([
+                    dispatch(getAllEvents()),
+                    dispatch(getAllSubscriptionsEvents()),
+                    dispatch(getAllSports()),
+                ]);
             })();
         }
     }, [user]);

@@ -1,25 +1,23 @@
-import { useEffect, useRef, Fragment, PropsWithChildren } from "react";
+import { Fragment, PropsWithChildren } from "react";
 import { useRouter } from "next/router";
 import { ProtectedRoutes, Routes } from "@routes";
-import { useSelector } from "react-redux";
-import { userSelector } from "@ducks/user";
+import firebase from "@fb/client";
+import { LinearProgress } from "@material-ui/core";
 
 export const ProtectedRoutesHOC = (props: PropsWithChildren<unknown>) => {
     const router = useRouter();
-    const lastRoute = useRef<string>(null);
-    const UserState = useSelector(userSelector);
+    const currentUser = firebase.auth().currentUser;
 
-    useEffect(() => {
-        lastRoute.current = router.route;
-
+    if (process.browser) {
         const isProtected = ProtectedRoutes.some((route) =>
             route.match(router.route)
         );
 
-        if (!UserState.uid && isProtected) {
+        if (!currentUser && isProtected) {
             router.push(Routes.signin);
+            return <LinearProgress color="primary" style={{ width: "100%" }} />;
         }
-    }, [router]);
+    }
 
     return <Fragment>{props.children}</Fragment>;
 };

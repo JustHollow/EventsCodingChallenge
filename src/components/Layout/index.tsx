@@ -13,6 +13,12 @@ import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import { PropsWithChildren, useState } from "react";
+import Link from "@components/Link";
+import { Routes } from "@routes";
+import { ListItem, ListItemIcon, ListItemText } from "@material-ui/core";
+import ListIcon from "@material-ui/icons/List";
+import EventAvailableIcon from "@material-ui/icons/EventAvailable";
+import SportsIcon from "@material-ui/icons/Sports";
 
 const drawerWidth = "20vw";
 
@@ -162,7 +168,32 @@ const Layout = (props: LayoutProps) => {
                     </IconButton>
                 </div>
                 <Divider />
-                <List>1st menu</List>
+                <List>
+                    <Link href={Routes.index}>
+                        <ListItem button>
+                            <ListItemIcon>
+                                <ListIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Events" />
+                        </ListItem>
+                    </Link>
+                    <Link href={Routes.events.create}>
+                        <ListItem button>
+                            <ListItemIcon>
+                                <EventAvailableIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Create Event" />
+                        </ListItem>
+                    </Link>
+                    <Link href={Routes.sports.create}>
+                        <ListItem button>
+                            <ListItemIcon>
+                                <SportsIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Create Sport" />
+                        </ListItem>
+                    </Link>
+                </List>
             </Drawer>
             <main className={classes.content}>
                 <div className={classes.appBarSpacer} />

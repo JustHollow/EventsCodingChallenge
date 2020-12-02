@@ -16,5 +16,7 @@
         "titleBar.inactiveForeground": "#e7e7e799"
     },
     "peacock.color": "#660066",
-    "typescript.tsdk": "node_modules/typescript/lib"
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "typescript.tsserver.experimental.enableProjectDiagnostics": true,
+    "typescript.tsserver.log": "off"
 }

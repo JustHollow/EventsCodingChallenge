@@ -1,8 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "@ducks";
 import { AppThunkAction } from "@store";
-import Router from "next/router";
-import { Routes } from "@routes";
 import EventsSubscriptionsDb, {
     EventsSubscriptionsItemFb,
 } from "@fb/collections/eventsSubscription";
@@ -53,6 +51,4 @@ export const getAllSubscriptionsEvents: AppThunkAction = () => async (
 
     dispatch(eventsActions.setSubscriptionsEventsItems(eventsDocs));
     dispatch(eventsActions.setLoaded(true));
-
-    Router.push(Routes.index);
 };

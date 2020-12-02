@@ -19,16 +19,18 @@ const useStyles = makeStyles((theme) => ({
         height: theme.spacing(12),
         display: "flex",
         flexDirection: "column",
+        placeItems: "center",
     },
     content: {
         display: "flex",
         overflow: "auto",
         height: "100%",
+        width: "100%",
         flexDirection: "column",
         placeContent: "center",
         placeItems: "center",
     },
-    subscribe: { alignSelf: "flex-end" },
+    subscribe: {},
 }));
 
 type EventsItemProps = { item: EventsStateItem };
@@ -77,7 +79,7 @@ const EventItem = ({ item }: EventsItemProps) => {
         <Grid item xs={6} md={4} lg={3}>
             <Paper className={classes.papper}>
                 <Link
-                    href={`${Routes.events.index}/${item.uid}`}
+                    href={`${Routes.events.base}/${item.uid}`}
                     className={classes.content}
                 >
                     <main>{item.name}</main>

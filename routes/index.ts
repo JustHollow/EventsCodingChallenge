@@ -1,10 +1,14 @@
 export const Routes = {
-    signin: "signin",
-    signup: "signup",
+    signin: "/signin",
+    signup: "/signup",
     index: "/",
+    sports: {
+        base: "/sport",
+        create: "/sport/create",
+    },
     events: {
-        index: "events",
-        create: "events/create",
+        base: "/events",
+        create: "/events/create",
     },
 };
 
