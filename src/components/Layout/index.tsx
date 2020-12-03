@@ -15,9 +15,15 @@ import NotificationsIcon from "@material-ui/icons/Notifications";
 import { PropsWithChildren, useState } from "react";
 import Link from "@components/Link";
 import { Routes } from "@routes";
-import { ListItem, ListItemIcon, ListItemText } from "@material-ui/core";
+import {
+    ListItem,
+    ListItemIcon,
+    ListItemText,
+    Tooltip,
+} from "@material-ui/core";
 import ListIcon from "@material-ui/icons/List";
-import EventAvailableIcon from "@material-ui/icons/EventAvailable";
+import EventIcon from "@material-ui/icons/EventAvailable";
+import EventTypeIcon from "@material-ui/icons/EventNote";
 import SportsIcon from "@material-ui/icons/Sports";
 
 const drawerWidth = "20vw";
@@ -169,30 +175,62 @@ const Layout = (props: LayoutProps) => {
                 </div>
                 <Divider />
                 <List>
-                    <Link href={Routes.index}>
-                        <ListItem button>
+                    <ListItem button component={Link} href={Routes.index}>
+                        <Tooltip
+                            title={open ? "" : "Events"}
+                            aria-label="events"
+                        >
                             <ListItemIcon>
                                 <ListIcon />
                             </ListItemIcon>
-                            <ListItemText primary="Events" />
-                        </ListItem>
-                    </Link>
-                    <Link href={Routes.events.create}>
-                        <ListItem button>
+                        </Tooltip>
+                        <ListItemText primary="Events" />
+                    </ListItem>
+                    <ListItem
+                        button
+                        component={Link}
+                        href={Routes.events.create}
+                    >
+                        <Tooltip
+                            title={open ? "" : "Create Event"}
+                            aria-label="create event"
+                        >
                             <ListItemIcon>
-                                <EventAvailableIcon />
+                                <EventIcon />
                             </ListItemIcon>
-                            <ListItemText primary="Create Event" />
-                        </ListItem>
-                    </Link>
-                    <Link href={Routes.sports.create}>
-                        <ListItem button>
+                        </Tooltip>
+                        <ListItemText primary="Create Event" />
+                    </ListItem>
+                    <ListItem
+                        button
+                        component={Link}
+                        href={Routes.events.type.create}
+                    >
+                        <Tooltip
+                            title={open ? "" : "Create Event Type"}
+                            aria-label="create event type"
+                        >
+                            <ListItemIcon>
+                                <EventTypeIcon />
+                            </ListItemIcon>
+                        </Tooltip>
+                        <ListItemText primary="Create Event Type" />
+                    </ListItem>
+                    <ListItem
+                        button
+                        component={Link}
+                        href={Routes.sports.create}
+                    >
+                        <Tooltip
+                            title={open ? "" : "Create Sport"}
+                            aria-label="create sport"
+                        >
                             <ListItemIcon>
                                 <SportsIcon />
                             </ListItemIcon>
-                            <ListItemText primary="Create Sport" />
-                        </ListItem>
-                    </Link>
+                        </Tooltip>
+                        <ListItemText primary="Create Sport" />
+                    </ListItem>
                 </List>
             </Drawer>
             <main className={classes.content}>

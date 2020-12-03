@@ -6,9 +6,11 @@ import UsersDb, { UserItemFb } from "@fb/collections/users";
 
 //Selectors
 export const userSelector = (state: RootState) => state.user;
+export const isAdminSelector = (state: RootState) =>
+    state.user.role === "admin";
 
 //Reducer
-export type UserBase = Omit<UserItemFb, "role">;
+export type UserBase = UserItemFb;
 
 export interface UserState extends UserBase {
     photoURL: string;
@@ -23,6 +25,7 @@ const initialState: UserState = {
     phoneNumber: "",
     photoURL: "",
     uid: "",
+    role: "",
 };
 
 const userSlice = createSlice({
@@ -35,7 +38,7 @@ const userSlice = createSlice({
         ) {
             state[action.payload.type] = action.payload.newState;
         },
-        setUser: (state, action: PayloadAction<UserState>) => action.payload,
+        setUser: (_state, action: PayloadAction<UserState>) => action.payload,
     },
 });
 
@@ -84,6 +87,7 @@ export const signUpUser: AppThunkAction<UserBase & { password: string }> = ({
             name,
             phoneNumber,
             surname,
+            role: "common",
         })
     );
 };

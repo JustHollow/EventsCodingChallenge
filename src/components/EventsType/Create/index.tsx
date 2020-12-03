@@ -1,4 +1,4 @@
-import SportsDb, { SportItemFb } from "@fb/collections/sports";
+import EventTypessDb, { EventTypesItemFb } from "@fb/collections/eventTypes";
 import {
     Grid,
     Paper,
@@ -36,16 +36,16 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const SportCreate = () => {
+const EventsTypeCreate = () => {
     const router = useRouter();
     const classes = useStyles();
 
-    type FormValues = Omit<SportItemFb, "uid">;
+    type FormValues = Omit<EventTypesItemFb, "uid">;
     const { register, handleSubmit, errors } = useForm<FormValues>();
 
     const handleSubmitCb = async (formData: FormValues) => {
-        const doc = SportsDb.doc();
-        const docData: SportItemFb = {
+        const doc = EventTypessDb.doc();
+        const docData: EventTypesItemFb = {
             ...formData,
             uid: doc.id,
         };
@@ -58,7 +58,7 @@ const SportCreate = () => {
         <Grid component={Paper} elevation={6} square className={classes.root}>
             <div className={clsx(classes.centered, classes.paper)}>
                 <Typography component="h1" variant="h5">
-                    What an awesome Sport do you want?
+                    What an event type do you want?
                 </Typography>
                 <form
                     className={classes.form}
@@ -70,12 +70,23 @@ const SportCreate = () => {
                         margin="normal"
                         required
                         fullWidth
-                        label="Sport name"
+                        label="Event type"
                         name="name"
                         inputRef={register({ required: true })}
                         error={Boolean(errors.name)}
                         helperText={errors.name?.message}
                         autoFocus
+                    />
+                    <TextField
+                        variant="outlined"
+                        margin="normal"
+                        required
+                        fullWidth
+                        label="Description"
+                        name="description"
+                        inputRef={register({ required: true })}
+                        error={Boolean(errors.description)}
+                        helperText={errors.description?.message}
                     />
 
                     <Button
@@ -93,4 +104,4 @@ const SportCreate = () => {
     );
 };
 
-export default SportCreate;
+export default EventsTypeCreate;

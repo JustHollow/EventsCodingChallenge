@@ -1,3 +1,5 @@
+import Link from "@components/Link";
+import { isAdminSelector } from "@ducks/user";
 import EventsDb, { EventItemFb } from "@fb/collections/events";
 import {
     Grid,
@@ -5,11 +7,15 @@ import {
     makeStyles,
     Typography,
     CircularProgress,
+    Button,
 } from "@material-ui/core";
+import { Description, EmojiEvents, Place } from "@material-ui/icons";
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
+import { Routes } from "@routes";
 import clsx from "clsx";
 import dayjs from "dayjs";
 import { useCallback, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -18,7 +24,6 @@ const useStyles = makeStyles((theme) => ({
     },
     centered: {
         display: "flex",
-        placeItems: "center",
         placeContent: "center",
     },
     paper: {
@@ -27,17 +32,27 @@ const useStyles = makeStyles((theme) => ({
         flexDirection: "column",
     },
     mapWrapper: {
-        margin: theme.spacing(2, 0),
+        margin: theme.spacing(2),
     },
     map: {
         width: "100%",
         height: 300,
+    },
+    admin: {
+        display: "flex",
+    },
+    adminButtons: {
+        height: "100%",
+        "* > button": {
+            height: "100%",
+        },
     },
 }));
 
 type EventDetailProps = { id: string };
 const EventDetail = ({ id }: EventDetailProps) => {
     const classes = useStyles();
+    const IsAdmin = useSelector(isAdminSelector);
     const [event, setEvent] = useState<EventItemFb>(null);
 
     useEffect(() => {
@@ -59,9 +74,14 @@ const EventDetail = ({ id }: EventDetailProps) => {
                 lat: event.location.latitude,
                 lng: event.location.longitude,
             });
+            map.getBounds();
         },
         [event]
     );
+
+    const handleDelete = async () => {
+        await EventsDb.doc(id).delete();
+    };
 
     if (!event) return <CircularProgress />;
 
@@ -69,10 +89,16 @@ const EventDetail = ({ id }: EventDetailProps) => {
         <Grid component={Paper} elevation={6} square className={classes.root}>
             <Grid item md={6} className={clsx(classes.centered, classes.paper)}>
                 <Typography component="h1" variant="h5">
+                    <EmojiEvents />
                     {event.name}
                 </Typography>
-                <Typography variant="body2">{event.description}</Typography>
                 <Typography variant="body2">
+                    <Description />
+                    {event.description}
+                </Typography>
+                <Typography variant="body2">
+                    <Place />
+
                     {dayjs(event.start).toString()}
                 </Typography>
             </Grid>
@@ -92,6 +118,28 @@ const EventDetail = ({ id }: EventDetailProps) => {
                     </GoogleMap>
                 )}
             </Grid>
+            {IsAdmin && (
+                <Grid item className={classes.admin}>
+                    {/* @ts-expect-error  someone deleted component prop from Button typings */}
+                    <Button
+                        color="primary"
+                        variant="contained"
+                        component={Link}
+                        href={`${Routes.events.edit}/${event.uid}`}
+                        className={classes.adminButtons}
+                    >
+                        Edit
+                    </Button>
+                    <Button
+                        color="secondary"
+                        variant="contained"
+                        className={classes.adminButtons}
+                        onClick={handleDelete}
+                    >
+                        Delete
+                    </Button>
+                </Grid>
+            )}
         </Grid>
     );
 };

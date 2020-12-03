@@ -36,6 +36,10 @@ const useStyles = makeStyles((theme) => ({
         backgroundSize: "cover",
         backgroundPosition: "center",
     },
+    gridItem: {
+        backdropFilter: "grayscale(1)",
+        background: "rgba(255,255,255,0.98)",
+    },
     paper: {
         margin: theme.spacing(8, 4),
         display: "flex",
@@ -48,6 +52,9 @@ const useStyles = makeStyles((theme) => ({
     form: {
         width: "100%",
         marginTop: theme.spacing(1),
+        "* > input": {
+            background: "white",
+        },
     },
     submit: {
         margin: theme.spacing(3, 0, 2),
@@ -88,6 +95,7 @@ export default function SignIn() {
                     component={Paper}
                     elevation={6}
                     square
+                    className={classes.gridItem}
                 >
                     <div className={clsx(classes.centered, classes.paper)}>
                         <Avatar className={classes.avatar}>

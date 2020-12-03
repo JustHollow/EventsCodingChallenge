@@ -11,6 +11,7 @@ import {
     MenuItem,
     InputLabel,
     FormControl,
+    CircularProgress,
 } from "@material-ui/core";
 import { KeyboardDateTimePicker } from "@material-ui/pickers";
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
@@ -18,13 +19,14 @@ import { Routes } from "@routes";
 import clsx from "clsx";
 import dayjs from "dayjs";
 import { useRouter } from "next/router";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { sportsSelector } from "@ducks/sports";
 import EventTypesDb, { EventTypesItemFb } from "@fb/collections/eventTypes";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import { useTypedController } from "@hookform/strictly-typed";
+import { isAdminSelector } from "@ducks/user";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -57,19 +59,39 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const EventCreate = () => {
+type EventEditProps = { id: string };
+const EventEdit = ({ id }: EventEditProps) => {
     const router = useRouter();
     const classes = useStyles();
     const SportsState = useSelector(sportsSelector);
-    const [EventTypes] = useCollectionData<EventTypesItemFb>(EventTypesDb);
+    const IsAdmin = useSelector(isAdminSelector);
+    const [
+        EventTypes,
+        isEventTypesLoading,
+    ] = useCollectionData<EventTypesItemFb>(EventTypesDb);
 
+    const [[Event] = [], isEventLoading] = useCollectionData<EventItemFb>(
+        EventsDb.where("uid", "==", id)
+    );
     const [map, setMap] = useState<google.maps.Map<Element>>(null);
     const [mapCenter, setMapCenter] = useState<google.maps.LatLng>(null);
     const [selectedDate, handleDateChange] = useState(dayjs());
 
     type FormValues = Omit<EventItemFb, "uid">;
-    const { register, handleSubmit, errors, control } = useForm<FormValues>();
+    const {
+        register,
+        handleSubmit,
+        errors,
+        control,
+        reset,
+    } = useForm<FormValues>({
+        defaultValues: Event,
+    });
     const TypedController = useTypedController<FormValues>({ control });
+
+    useEffect(() => {
+        reset(Event);
+    }, [Event]);
 
     const handleSubmitCb = async (formData: FormValues) => {
         const doc = EventsDb.doc();
@@ -123,6 +145,14 @@ const EventCreate = () => {
     const onUnmount = useCallback(function callback() {
         setMap(null);
     }, []);
+
+    if (isEventLoading || isEventTypesLoading) {
+        return <CircularProgress />;
+    }
+
+    if (!IsAdmin) {
+        return <div>Access denied</div>;
+    }
 
     return (
         <Grid component={Paper} elevation={6} square className={classes.root}>
@@ -264,7 +294,7 @@ const EventCreate = () => {
                         className={classes.create}
                         type="submit"
                     >
-                        Create
+                        Save
                     </Button>
                 </form>
             </div>
@@ -272,4 +302,4 @@ const EventCreate = () => {
     );
 };
 
-export default EventCreate;
+export default EventEdit;

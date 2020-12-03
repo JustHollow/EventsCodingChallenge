@@ -36,6 +36,10 @@ const useStyles = makeStyles((theme) => ({
         backgroundSize: "cover",
         backgroundPosition: "center",
     },
+    gridItem: {
+        backdropFilter: "grayscale(1)",
+        background: "rgba(255,255,255,0.98)",
+    },
     paper: {
         margin: theme.spacing(8, 4),
         display: "flex",
@@ -85,6 +89,7 @@ export default function SignIn() {
                     component={Paper}
                     elevation={6}
                     square
+                    className={classes.gridItem}
                 >
                     <div className={clsx(classes.centered, classes.paper)}>
                         <Avatar className={classes.avatar}>

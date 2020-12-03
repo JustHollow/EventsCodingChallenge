@@ -3,16 +3,32 @@ import clsx from "clsx";
 import { useRouter } from "next/router";
 import NextLink, { LinkProps } from "next/link";
 import MuiLink, { LinkProps as MuiLinkProps } from "@material-ui/core/Link";
+import { makeStyles } from "@material-ui/core";
+
+const useStyles = makeStyles({
+    link: {
+        textDecoration: "none",
+        color: "inherit",
+        "&:hover": {
+            textDecoration: "none",
+        },
+    },
+});
 
 const NextComposed = React.forwardRef<
     HTMLAnchorElement,
     LinkProps & { className: string }
 >(function NextComposed(props, ref) {
+    const classes = useStyles();
     const { as, href, ...other } = props;
 
     return (
         <NextLink href={href} as={as}>
-            <a ref={ref} {...other} />
+            <a
+                ref={ref}
+                {...other}
+                className={clsx(classes.link, props.className)}
+            />
         </NextLink>
     );
 });

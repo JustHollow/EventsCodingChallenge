@@ -9,7 +9,16 @@ export const Routes = {
     events: {
         base: "/events",
         create: "/events/create",
+        edit: "/events/edit",
+        type: {
+            base: "/events/type",
+            create: "/events/type/create",
+        },
     },
 };
 
-export const ProtectedRoutes = [Routes.index];
+export const ProtectedRoutes: string[] = [
+    Routes.index,
+    Routes.events.base,
+    Routes.sports.base,
+];
