@@ -8,15 +8,15 @@ export const ProtectedRoutesHOC = (props: PropsWithChildren<unknown>) => {
     const router = useRouter();
     const currentUser = firebase.auth().currentUser;
 
-    if (!currentUser) {
+    const allowedRoutes = [Routes.signin, Routes.signup];
+
+    const userOnAllowedPage = allowedRoutes.some((route) =>
+        router.route.match(route)
+    );
+
+    if (!currentUser && !userOnAllowedPage) {
         if (process.browser) {
-            if (
-                ![Routes.signin, Routes.signup].some((route) =>
-                    router.route.match(route)
-                )
-            ) {
-                router.replace(Routes.signin);
-            }
+            router.replace(Routes.signin);
         }
 
         return <LinearProgress color="primary" style={{ width: "100%" }} />;
